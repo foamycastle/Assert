@@ -9,8 +9,12 @@
 
 namespace Foamycastle;
 
-use Foamycastle\Result\NegativeResult;
+use Foamycastle\Result\ExpectedError;
 use Foamycastle\Result\PositiveResult;
+use Foamycastle\Result\NegativeResult;
+use Foamycastle\Result\UnexpectedError;
+use Foamycastle\Result\ExpectedException;
+use Foamycastle\Result\UnexpectedException;
 
 abstract class Result
 {
@@ -37,6 +41,26 @@ abstract class Result
     public static function Fail(Assert $assertion): self
     {
         return new NegativeResult($assertion);
+    }
+
+    public static function ExpectedException(Assert $assertion): self
+    {
+        return new ExpectedException($assertion);
+    }
+
+    public static function UnexpectedException(Assert $assertion): self
+    {
+        return new UnexpectedException($assertion);
+    }
+
+    public static function ExpectedError(Assert $assertion): self
+    {
+        return new ExpectedError($assertion);
+    }
+
+    public static function UnexpectedError(Assert $assertion): self
+    {
+        return new UnexpectedError($assertion);
     }
 
     public static function Collect(Result $result): null|int
