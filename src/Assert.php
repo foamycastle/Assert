@@ -17,10 +17,9 @@ use Foamycastle\MetaData\Key;
 use ReflectionFunction;
 
 /**
- * @method static void HasClass(object $object, string $className)
- * @method static void IsTrue(mixed $testFixture)
- * @method static void IsFalse(mixed $testFixture)
- * @method static void IsANumber(mixed $data)
+ * @method static void IsABool(mixed $bool)
+ * @method static void IsAnArray(mixed $array)
+ * @method static void IsAString(mixed $string)
  */
 abstract class Assert implements FixtureAccess
 {
