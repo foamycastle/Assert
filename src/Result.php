@@ -19,7 +19,7 @@ use Foamycastle\Result\UnexpectedException;
 
 abstract class Result implements ResultInterface
 {
-    private Assert $assertion;
+    protected Assert $assertion;
     private static array $results = [];
 
     protected function __construct(Assert $assertion)
