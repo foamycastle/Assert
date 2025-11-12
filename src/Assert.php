@@ -23,19 +23,18 @@ abstract class Assert
      * data that is not germaine to the procedure, but may have generated during the procedure that is relevant elsewhere
      * @var array
      */
-    protected MetaDataInterface $metaData;
+    public MetaDataInterface $metadata;
 
-    abstract public function assert(): bool;
+    /**
+     * The actual procedure
+     * @return bool
+     */
+    abstract protected function assert(): bool;
 
     /**
      * @inheritDoc
      */
-    function metadata(string $key = "", $value = ""): mixed
-    {
-        if ($key == "" && empty($value)) return $this->metaData;
-        if (empty($value)) return $this->metaData;
-        return $this->metaData->setValue($key, $value);
-    }
+    abstract protected function metadata(): array;
 
     protected function __construct(...$args)
     {
