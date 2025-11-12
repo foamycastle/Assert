@@ -21,7 +21,6 @@ class IsAnArray extends SingleFixture
     //properties here
     public function __construct(mixed $array)
     {
-        //TODO: Assign properties
         parent::__construct($array);
     }
 

@@ -20,7 +20,6 @@ class IsABool extends SingleFixture
     //properties here
     public function __construct(mixed $bool)
     {
-        //TODO: Assign properties
         parent::__construct($bool);
     }
 
