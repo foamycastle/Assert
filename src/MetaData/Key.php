@@ -18,4 +18,6 @@ class Key
     public const ASS = 'assertion';
     public const PROC = 'procedure';
     public const IDX = 'index';
+    public const ERR = 'error';
+    public const EX = 'exception';
 }
