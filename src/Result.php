@@ -17,7 +17,7 @@ use Foamycastle\Result\PositiveResult;
 use Foamycastle\Result\UnexpectedError;
 use Foamycastle\Result\UnexpectedException;
 
-abstract class Result
+abstract class Result implements ResultInterface
 {
     private Assert $assertion;
     private static array $results = [];
@@ -100,4 +100,16 @@ abstract class Result
         return $output;
     }
 
+    /**
+     * @return Result[]
+     */
+    public static function Collection(): array
+    {
+        return self::$results;
+    }
+
+    public static function Previous(): ?Result
+    {
+        return end(self::$results) ?: null;
+    }
 }
