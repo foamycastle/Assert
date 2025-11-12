@@ -21,8 +21,9 @@ use ReflectionFunction;
  * @method static void IsFalse(mixed $testFixture)
  * @method static void IsANumber(mixed $data)
  */
-abstract class Assert
+abstract class Assert implements FixtureAccess
 {
+    protected array $fixture;
     /**
      * The result of the assertion procedure logic
      * @var Result
@@ -57,6 +58,7 @@ abstract class Assert
         $this->metadata = new MetaData();
         $this->metadata->ingest($this->metadata());
         $this->metadata[Key::P_VAL] = $args;
+        $this->fixture = $args;
         $this->getReflection();
         $this->initTest();
 
@@ -123,4 +125,31 @@ abstract class Assert
             return null;
         }
     }
+
+    /**
+     * @return array
+     */
+    function getFixtureNames(): array
+    {
+        return array_keys($this->fixture);
+    }
+
+    /**
+     * @param string $name
+     * @return bool
+     */
+    function hasFixture(string $name): bool
+    {
+        return ($this->fixture[$name] ?? false);
+    }
+
+    /**
+     * @param string|int $index
+     * @return mixed
+     */
+    function getFixture(string $index): mixed
+    {
+        return $this->fixture[$index] ?? null;
+    }
+
 }
