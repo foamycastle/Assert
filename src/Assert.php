@@ -11,6 +11,7 @@ namespace Foamycastle;
 
 use Error;
 use Exception;
+use Foamycastle\Exception\AssertionDoesntExist;
 use Foamycastle\Exception\ExpectationNotMet;
 use Foamycastle\MetaData\Key;
 use ReflectionFunction;
@@ -122,7 +123,7 @@ abstract class Assert implements FixtureAccess
         if (class_exists($ns)) {
             return new $ns(...$arguments);
         } else {
-            return null;
+            throw new AssertionDoesntExist($name);
         }
     }
 
