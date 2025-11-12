@@ -68,7 +68,10 @@ abstract class Assert implements FixtureAccess
 
     public function __get(string $name)
     {
-        return ($this->otherParams[$name] ?? null);
+        if (key_exists($name, $this->fixture)) {
+            return $this->fixture[$name];
+        }
+        return null;
     }
 
     public function __set(string $name, $value): void
