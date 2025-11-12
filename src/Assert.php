@@ -92,9 +92,7 @@ abstract class Assert
     }
     protected function getReflection(): void
     {
-
-        $this->metadata['procedure'] = new ReflectionFunction($this->__construct(...));
-        $this->metadata['paramNames'] = $this->metadata['procedure']->getParameters();
+        $reflection = new ReflectionFunction($this->__construct(...));
         $this->metadata[KEY::PROC] = $reflection;
         $this->metadata[Key::P_NAME] = $reflection->getParameters();
     }
