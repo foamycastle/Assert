@@ -14,9 +14,10 @@ use Foamycastle\Result\PositiveResult;
 
 abstract class Result
 {
-    private AssertionGetInterface $assertion;
+    private Assert $assertion;
+    private static array $results = [];
 
-    protected function __construct(AssertionGetInterface $assertion)
+    protected function __construct(Assert $assertion)
     {
         $this->assertion = $assertion;
     }
@@ -33,5 +34,40 @@ abstract class Result
         return new NegativeResult($assertion);
     }
 
+    public static function Collect(Result $result): null|int
+    {
+        $currentCount = count(self::$results) + 1;
+        $metadata = $result->assertion->metadata;
+        if (!$metadata->hasKey('name')) {
+            $metadata['name'] = "Unnamed Test " . $currentCount;
+        }
+        if (!$metadata->hasKey('description')) {
+            $metadata['description'] = "Undescribed Test " . $currentCount;
+        }
+        $metadata['index'] = $currentCount;
+        self::$results[] = $result;
+        return count(self::$results);
+    }
+
+    public static function Clear(): int
+    {
+        self::$results = [];
+        return 0;
+    }
+
+    /**
+     * @param string $name
+     * @return Result[]
+     */
+    public static function FindByName(string $name): array
+    {
+        $output = [];
+        foreach (self::$results as $result) {
+            if ($result->assertion()->getName() === $name) {
+                $output[] = $result;
+            }
+        }
+        return $output;
+    }
 
 }

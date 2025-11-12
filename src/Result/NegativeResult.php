@@ -10,11 +10,11 @@
 namespace Foamycastle\Result;
 
 use Foamycastle\Result;
-use Foamycastle\AssertionGetInterface;
+use Foamycastle\Assert;
 
 class NegativeResult extends Result
 {
-    public function __construct(AssertionGetInterface $assertion)
+    public function __construct(Assert $assertion)
     {
         parent::__construct($assertion);
     }

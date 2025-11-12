@@ -11,36 +11,13 @@ namespace Foamycastle;
 
 use ReflectionFunction;
 
-abstract class Assert implements AssertionSetInterface, AssertionGetInterface
+abstract class Assert
 {
-    /**
-     * A name by which to identify the assertion in reporting
-     * @var string|class-string
-     */
-    protected string $name;
-
     /**
      * The result of the assertion procedure logic
      * @var Result
      */
     protected Result $result;
-
-    /**
-     * @var callable $procedure
-     */
-    protected $procedure;
-
-    /**
-     * The values of the arguments passed to the procedure
-     * @var array
-     */
-    protected array $procedureParams;
-
-    /**
-     * The names of the arguments passed to the procedure
-     * @var array
-     */
-    protected array $procedureParamNames;
 
     /**
      * data that is not germaine to the procedure, but may have generated during the procedure that is relevant elsewhere
@@ -66,52 +43,13 @@ abstract class Assert implements AssertionSetInterface, AssertionGetInterface
         $this->result = $result ? Result::Pass($this) : Result::Fail($this);
     }
 
-    /**
-     * @inheritDoc
-     */
-    function setName(string $name): AssertionSetInterface
-    {
-        $this->name = $name;
-        return $this;
-    }
 
-    /**
-     * @return string
-     */
-    function getName(): string
-    {
-        return $this->name;
-    }
-
-    protected function getReflection($procedure): void
+    protected function getReflection(): void
     {
         $this->procedure = new ReflectionFunction($procedure);
         $this->procedureParamNames = $this->procedure->getParameters();
     }
 
-    /**
-     * @return MetadataInterface
-     */
-    function getMetadata(): MetadataInterface
-    {
-        return $this->metaData;
-    }
-
-    /**
-     * @return array
-     */
-    function getParamNames(): array
-    {
-        return $this->procedureParamNames;
-    }
-
-    /**
-     * @return array
-     */
-    function getParamValues(): array
-    {
-
-    }
 
     public static function __callStatic(string $name, array $arguments)
     {
