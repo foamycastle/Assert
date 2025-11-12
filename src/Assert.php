@@ -12,6 +12,7 @@ namespace Foamycastle;
 use Error;
 use Exception;
 use ReflectionFunction;
+use Foamycastle\Exception\ExpectationNotMet;
 
 abstract class Assert
 {
@@ -65,6 +66,7 @@ abstract class Assert
                 $this->result = Result::UnexpectedException($this);
             }
             $this->metadata['exception'] = $exception;
+            return;
         } catch (Error $error) {
             if (Expect::Error() && Expect::Get() == $error::class) {
                 $this->result = Result::ExpectedError($this);
@@ -73,6 +75,12 @@ abstract class Assert
                 $this->result = Result::UnexpectedError($this);
             }
             $this->metadata['error'] = $error;
+            return;
+        } finally {
+            if (Expect::Exception()) {
+                throw new ExpectationNotMet($this);
+            }
+            Expect::Nothing();
         }
     }
     protected function getReflection(): void
