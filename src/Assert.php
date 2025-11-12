@@ -42,13 +42,15 @@ abstract class Assert
         $this->metadata->ingest($this->metadata());
         $this->metadata['params'] = $args;
         $this->getReflection();
-
-        $this->result = $this->assert() ? Result::Pass($this) : Result::Fail($this);
+        $this->initTest();
 
         Result::Collect($this->result);
     }
 
-
+    protected function initTest(): void
+    {
+        $this->result = $this->assert() ? Result::Pass($this) : Result::Fail($this);
+    }
     protected function getReflection(): void
     {
 
