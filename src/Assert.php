@@ -107,4 +107,13 @@ abstract class Assert implements AssertionSetInterface, AssertionGetInterface
 
     }
 
+    public static function __callStatic(string $name, array $arguments)
+    {
+        $ns = __NAMESPACE__ . '\\' . "Assert" . "\\" . $name;
+        if (class_exists($ns)) {
+            return new $ns(...$arguments);
+        } else {
+            return null;
+        }
+    }
 }
