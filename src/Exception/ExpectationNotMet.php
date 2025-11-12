@@ -19,6 +19,6 @@ class ExpectationNotMet extends Exception
     {
         $testName = $assertion->metadata['name'];
         $exceptionClass = Expect::Get();
-        parent::__construct("Expectation that `{$testName}` throw the exception $exceptionClass was not met.");
+        parent::__construct("Expectation that $testName throw the exception $exceptionClass was not met.");
     }
 }
