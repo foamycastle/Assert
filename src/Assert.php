@@ -9,6 +9,8 @@
 
 namespace Foamycastle;
 
+use Error;
+use Exception;
 use ReflectionFunction;
 
 abstract class Assert
@@ -47,9 +49,31 @@ abstract class Assert
         Result::Collect($this->result);
     }
 
+    /**
+     * Allow the test to take place and determine the result
+     * @return void
+     */
     protected function initTest(): void
     {
-        $this->result = $this->assert() ? Result::Pass($this) : Result::Fail($this);
+        try {
+            $this->result = $this->assert() ? Result::Pass($this) : Result::Fail($this);
+        } catch (Exception $exception) {
+            if (Expect::Exception() && Expect::Get() == $exception::class) {
+                $this->result = Result::ExpectedException($this);
+            }
+            if (!Expect::Exception()) {
+                $this->result = Result::UnexpectedException($this);
+            }
+            $this->metadata['exception'] = $exception;
+        } catch (Error $error) {
+            if (Expect::Error() && Expect::Get() == $error::class) {
+                $this->result = Result::ExpectedError($this);
+            }
+            if (!Expect::Error()) {
+                $this->result = Result::UnexpectedError($this);
+            }
+            $this->metadata['error'] = $error;
+        }
     }
     protected function getReflection(): void
     {
