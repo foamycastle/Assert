@@ -14,6 +14,12 @@ use Exception;
 use ReflectionFunction;
 use Foamycastle\Exception\ExpectationNotMet;
 
+/**
+ * @method static void HasClass(object $object, string $className)
+ * @method static void IsTrue(mixed $testFixture)
+ * @method static void IsFalse(mixed $testFixture)
+ * @method static void IsANumber(mixed $data)
+ */
 abstract class Assert
 {
     /**
