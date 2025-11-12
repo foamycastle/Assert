@@ -1,0 +1,112 @@
+<?php
+/*
+ *  Author: Aaron Sollman
+ *  Email:  unclepong@gmail.com
+ *  Date:   11/11/25
+ *  Time:   16:05
+*/
+
+
+namespace Foamycastle;
+
+use Traversable;
+use AllowDynamicProperties;
+
+#[AllowDynamicProperties]
+class MetaData implements MetaDataInterface
+{
+    private bool $readOnly = false;
+    private array $data = [];
+
+    function setValue(string $key, mixed $value): MetaDataInterface
+    {
+        if (!$this->hasKey($key)) {
+            //TODO: Error: Key doesn't exist
+        }
+        if ($this->readOnly) {
+            //TODO: Error: the metadata is readonly
+        }
+        return $this;
+    }
+
+    function isReadOnly(bool $readOnly): bool
+    {
+        return ($this->readOnly ?? false);
+    }
+
+    function clearKey(string $key): MetaDataInterface
+    {
+        if (!$this->hasKey($key)) {
+            //TODO: Error: the key doesn't exist
+        }
+        if ($this->readOnly) {
+            //TODO: Error: this metadata is readonly
+        }
+        unset($this->data[$key]);
+        return $this;
+    }
+
+    function hasKey(string $key): bool
+    {
+        return isset($this->data[$key]);
+    }
+
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetExists(mixed $offset): bool
+    {
+        return $this->hasKey($offset);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetGet(mixed $offset): mixed
+    {
+        return ($this->data[$offset] ?? null);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetSet(mixed $offset, mixed $value): void
+    {
+        if ($this->readOnly) return;
+        $this->data[$offset] = $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetUnset(mixed $offset): void
+    {
+        if ($this->readOnly) return;
+        $this->clearKey($offset);
+    }
+
+    public function getIterator(): Traversable
+    {
+        foreach ($this->data as $key => $value) {
+            yield $key => $value;
+        }
+    }
+
+    public function count(): int
+    {
+        return empty($this->data)
+            ? 0
+            : count($this->data);
+    }
+
+    public function __get(string $name)
+    {
+        return $this->data[$name] ?? null;
+    }
+
+    public function __set(string $name, $value): void
+    {
+        $this->data[$name] = $value;
+    }
+}
