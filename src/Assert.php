@@ -42,6 +42,12 @@ abstract class Assert
     abstract protected function assert(): bool;
 
     /**
+     * Other parameters that are optional to the test
+     * @var array<string,mixed> $otherParams
+     */
+    protected array $otherParams;
+
+    /**
      * @return array various metadata pertaining to the test itself
      */
     abstract protected function metadata(): array;
@@ -55,6 +61,16 @@ abstract class Assert
         $this->initTest();
 
         Result::Collect($this->result);
+    }
+
+    public function __get(string $name)
+    {
+        return ($this->otherParams[$name] ?? null);
+    }
+
+    public function __set(string $name, $value): void
+    {
+        $this->otherParams[$name] = $value;
     }
 
     /**
