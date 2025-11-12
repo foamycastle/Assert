@@ -11,8 +11,8 @@ namespace Foamycastle;
 
 class Expect
 {
-    private static string $exceptionClassName;
-    private static string $errorClassName;
+    private static string $exceptionClassName = '';
+    private static string $errorClassName = '';
 
     /**
      * Sets the expectation during runtime that an exception will occur during the very next assertion
@@ -26,7 +26,7 @@ class Expect
             self::$exceptionClassName = $className;
             return true;
         }
-        return isset(self::$exceptionClassName);
+        return self::$exceptionClassName != '';
     }
 
     /**
@@ -41,7 +41,7 @@ class Expect
             self::$errorClassName = $className;
             return true;
         }
-        return isset(self::$errorClassName);
+        return self::$errorClassName != "";
     }
 
     /**
