@@ -32,21 +32,28 @@ abstract class Assert
     abstract protected function assert(): bool;
 
     /**
-     * @inheritDoc
+     * @return array various metadata pertaining to the test itself
      */
     abstract protected function metadata(): array;
 
     protected function __construct(...$args)
     {
-        $result = $this->assert();
-        $this->result = $result ? Result::Pass($this) : Result::Fail($this);
+        $this->metadata = new MetaData();
+        $this->metadata->ingest($this->metadata());
+        $this->metadata['params'] = $args;
+        $this->getReflection();
+
+        $this->result = $this->assert() ? Result::Pass($this) : Result::Fail($this);
+
+        Result::Collect($this->result);
     }
 
 
     protected function getReflection(): void
     {
-        $this->procedure = new ReflectionFunction($procedure);
-        $this->procedureParamNames = $this->procedure->getParameters();
+
+        $this->metadata['procedure'] = new ReflectionFunction($this->__construct(...));
+        $this->metadata['paramNames'] = $this->metadata['procedure']->getParameters();
     }
 
 

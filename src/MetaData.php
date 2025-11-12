@@ -109,4 +109,19 @@ class MetaData implements MetaDataInterface
     {
         $this->data[$name] = $value;
     }
+
+    /**
+     * Ingest many data items in a single call
+     * @param array $data
+     * @return self
+     */
+    function ingest(array $data): MetaDataInterface
+    {
+        foreach ($data as $key => $value) {
+            if (!is_string($key)) continue;
+            $this->data[$key] = $value;
+        }
+        return $this;
+    }
+
 }

@@ -23,8 +23,21 @@ class HasClass extends Assert
         parent::__construct($object, $className);
     }
 
+    /**
+     * @return array
+     */
+    protected function metadata(): array
+    {
+        return [
+            'name' => basename($this::class),
+            'description' => 'the object has the class in its inheritance tree',
+        ];
+    }
+
+
     public function assert(): bool
     {
-        return true;
+        $parents = class_parents($this->object);
+        return in_array($this->className, array_merge($parents, [$this->object::class]));
     }
 }

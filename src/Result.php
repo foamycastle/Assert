@@ -24,6 +24,11 @@ abstract class Result
 
     abstract public function result(): bool;
 
+    public function getAssertion(): Assert
+    {
+        return $this->assertion;
+    }
+
     public static function Pass(Assert $assertion): self
     {
         return new PositiveResult($assertion);

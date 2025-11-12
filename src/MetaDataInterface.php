@@ -23,4 +23,6 @@ interface MetaDataInterface extends ArrayAccess, IteratorAggregate, Countable
 
     function isReadOnly(bool $readOnly): bool;
 
+    function ingest(array $data): self;
+
 }
