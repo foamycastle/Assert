@@ -60,6 +60,12 @@ abstract class Assert implements AssertionSetInterface, AssertionGetInterface
         return $this->metaData->setValue($key, $value);
     }
 
+    protected function __construct(...$args)
+    {
+        $result = $this->assert();
+        $this->result = $result ? Result::Pass($this) : Result::Fail($this);
+    }
+
     /**
      * @inheritDoc
      */
