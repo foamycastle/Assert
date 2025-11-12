@@ -122,12 +122,17 @@ abstract class Assert implements FixtureAccess
 
     public static function __callStatic(string $name, array $arguments)
     {
-        $ns = __NAMESPACE__ . '\\' . "Assert" . "\\" . $name;
-        if (class_exists($ns)) {
-            return new $ns(...$arguments);
-        } else {
-            throw new AssertionDoesntExist($name);
+        $sf = __NAMESPACE__ . "\\Assert\\SingleFixture\\" . $name;
+        $mf = __NAMESPACE__ . "\\Assert\\MultiFixture\\" . $name;
+        if (class_exists($mf)) {
+            new $mf(...$arguments);
+            return;
         }
+        if (class_exists($sf)) {
+            new $sf($arguments[0]);
+            return;
+        }
+        throw new AssertionDoesntExist($name);
     }
 
     /**
