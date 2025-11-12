@@ -7,8 +7,9 @@
 */
 
 
-namespace Foamycastle\Assert;
+namespace Foamycastle\Assert\SingleFixture;
 
+use Foamycastle\Assert\SingleFixture;
 use Foamycastle\MetaData\Key;
 
 /**

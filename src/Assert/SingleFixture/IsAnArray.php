@@ -7,9 +7,10 @@
 */
 
 
-namespace Foamycastle\Assert;
+namespace Foamycastle\Assert\SingleFixture;
 
 use ArrayAccess;
+use Foamycastle\Assert\SingleFixture;
 use Foamycastle\MetaData\Key;
 
 /**
