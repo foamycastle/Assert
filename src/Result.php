@@ -9,11 +9,12 @@
 
 namespace Foamycastle;
 
+use Foamycastle\MetaData\Key;
 use Foamycastle\Result\ExpectedError;
-use Foamycastle\Result\PositiveResult;
-use Foamycastle\Result\NegativeResult;
-use Foamycastle\Result\UnexpectedError;
 use Foamycastle\Result\ExpectedException;
+use Foamycastle\Result\NegativeResult;
+use Foamycastle\Result\PositiveResult;
+use Foamycastle\Result\UnexpectedError;
 use Foamycastle\Result\UnexpectedException;
 
 abstract class Result
@@ -67,13 +68,13 @@ abstract class Result
     {
         $currentCount = count(self::$results) + 1;
         $metadata = $result->assertion->metadata;
-        if (!$metadata->hasKey('name')) {
-            $metadata['name'] = "Unnamed Test " . $currentCount;
+        if (!$metadata->hasKey(Key::NAME)) {
+            $metadata[Key::NAME] = "Unnamed Test " . $currentCount;
         }
-        if (!$metadata->hasKey('description')) {
-            $metadata['description'] = "Undescribed Test " . $currentCount;
+        if (!$metadata->hasKey(Key::DESC)) {
+            $metadata[Key::DESC] = "Undescribed Test " . $currentCount;
         }
-        $metadata['index'] = $currentCount;
+        $metadata[Key::IDX] = $currentCount;
         self::$results[] = $result;
         return count(self::$results);
     }

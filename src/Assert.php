@@ -11,8 +11,9 @@ namespace Foamycastle;
 
 use Error;
 use Exception;
-use ReflectionFunction;
 use Foamycastle\Exception\ExpectationNotMet;
+use Foamycastle\MetaData\Key;
+use ReflectionFunction;
 
 /**
  * @method static void HasClass(object $object, string $className)
@@ -49,7 +50,7 @@ abstract class Assert
     {
         $this->metadata = new MetaData();
         $this->metadata->ingest($this->metadata());
-        $this->metadata['params'] = $args;
+        $this->metadata[Key::P_VAL] = $args;
         $this->getReflection();
         $this->initTest();
 
@@ -71,7 +72,7 @@ abstract class Assert
             if (!Expect::Exception()) {
                 $this->result = Result::UnexpectedException($this);
             }
-            $this->metadata['exception'] = $exception;
+            $this->metadata[Key::EX] = $exception;
             return;
         } catch (Error $error) {
             if (Expect::Error() && Expect::Get() == $error::class) {
@@ -80,7 +81,7 @@ abstract class Assert
             if (!Expect::Error()) {
                 $this->result = Result::UnexpectedError($this);
             }
-            $this->metadata['error'] = $error;
+            $this->metadata[Key::ERR] = $error;
             return;
         } finally {
             if (Expect::Exception()) {
@@ -94,6 +95,8 @@ abstract class Assert
 
         $this->metadata['procedure'] = new ReflectionFunction($this->__construct(...));
         $this->metadata['paramNames'] = $this->metadata['procedure']->getParameters();
+        $this->metadata[KEY::PROC] = $reflection;
+        $this->metadata[Key::P_NAME] = $reflection->getParameters();
     }
 
 
