@@ -9,6 +9,7 @@
 
 namespace Foamycastle\Assert;
 
+use Closure;
 use Foamycastle\Assert;
 use Foamycastle\MetaData\Key;
 
