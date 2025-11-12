@@ -1,0 +1,21 @@
+{
+  "name": "foamycastle/assert",
+  "description": "a package that allow devs the ability to assert inline ",
+  "minimum-stability": "dev",
+  "license": "GPL-3.0-or-later",
+  "authors": [
+    {
+      "name": "Aaron Sollman",
+      "email": "unclepong@gmail.com"
+    }
+  ],
+  "version": "0.0.1",
+  "require": {
+    "php": "^8.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "Foamycastle\\": "src"
+    }
+  }
+}
