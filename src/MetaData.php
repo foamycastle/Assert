@@ -12,12 +12,20 @@ namespace Foamycastle;
 use Traversable;
 use AllowDynamicProperties;
 
+/**
+ * @property-read string<value-of<KEY::*>>
+ */
 #[AllowDynamicProperties]
 class MetaData implements MetaDataInterface
 {
     private bool $readOnly = false;
     private array $data = [];
 
+    /**
+     * @param string<value-of<KEY::*>> $key
+     * @param mixed $value
+     * @return MetaDataInterface
+     */
     function setValue(string $key, mixed $value): MetaDataInterface
     {
         if (!$this->hasKey($key)) {
@@ -34,6 +42,10 @@ class MetaData implements MetaDataInterface
         return ($this->readOnly ?? false);
     }
 
+    /**
+     * @param string<value-of<KEY::*>> $key
+     * @return MetaDataInterface
+     */
     function clearKey(string $key): MetaDataInterface
     {
         if (!$this->hasKey($key)) {
@@ -46,6 +58,10 @@ class MetaData implements MetaDataInterface
         return $this;
     }
 
+    /**
+     * @param string<value-of<KEY::*>> $key
+     * @return bool
+     */
     function hasKey(string $key): bool
     {
         return isset($this->data[$key]);
@@ -53,7 +69,7 @@ class MetaData implements MetaDataInterface
 
 
     /**
-     * @inheritDoc
+     * @param string<value-of<Key::*>> $offset
      */
     public function offsetExists(mixed $offset): bool
     {
@@ -61,7 +77,7 @@ class MetaData implements MetaDataInterface
     }
 
     /**
-     * @inheritDoc
+     * @param string<value-of<Key::*>> $offset
      */
     public function offsetGet(mixed $offset): mixed
     {
@@ -69,7 +85,8 @@ class MetaData implements MetaDataInterface
     }
 
     /**
-     * @inheritDoc
+     * @param string<value-of<Key::*>> $offset
+     * @param mixed $value
      */
     public function offsetSet(mixed $offset, mixed $value): void
     {
@@ -78,7 +95,7 @@ class MetaData implements MetaDataInterface
     }
 
     /**
-     * @inheritDoc
+     * @param string<value-of<Key::*>> $offset
      */
     public function offsetUnset(mixed $offset): void
     {
