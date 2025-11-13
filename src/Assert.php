@@ -14,6 +14,7 @@ use Exception;
 use Foamycastle\Exception\AssertionDoesntExist;
 use Foamycastle\Exception\ExpectationNotMet;
 use Foamycastle\MetaData\Key;
+use ReflectionException;
 use ReflectionFunction;
 
 /**
@@ -23,21 +24,25 @@ use ReflectionFunction;
  */
 abstract class Assert implements FixtureAccess
 {
+    /**
+     * @var array contains the data that will be subject to test in the assert() method
+     */
     protected array $fixture;
     /**
-     * The result of the assertion procedure logic
-     * @var Result
+     * The result object. Mainly responsible for collecting and managing the assert results in a static space, an innstance will
+     * hold a reference to an assertion object, as well as provide a method for exposing a true/false assertion result.
+     * @var Result $result
      */
     protected Result $result;
 
     /**
-     * data that is not germaine to the procedure, but may have generated during the procedure that is relevant elsewhere
-     * @var array
+     * Data surrounding the procedure, such as reflection objects detailing the arguments to the procedure
+     * @var MetaDataInterface $metadata
      */
     public MetaDataInterface $metadata;
 
     /**
-     * The actual procedure
+     * The actual procedure.  The business logic of determining the assertion result.
      * @return bool
      */
     abstract protected function assert(): bool;
@@ -49,10 +54,16 @@ abstract class Assert implements FixtureAccess
     protected array $otherParams;
 
     /**
-     * @return array various metadata pertaining to the test itself
+     * @return array returns default metadata to the `Metadata` object. typically the 'name' and 'description' elements are set in this manner.
      */
     abstract protected function metadata(): array;
 
+    /**
+     * The Assert class serves as a base for extending different types of assertions.  The immediate classes in the inheritance
+     * tree are `SingleFixture` and `MultiFixture`.
+     * @param ...$args
+     * @throws ExpectationNotMet
+     */
     protected function __construct(...$args)
     {
         $this->metadata = new MetaData();
@@ -65,14 +76,29 @@ abstract class Assert implements FixtureAccess
         Result::Collect($this->result);
     }
 
+    /**
+     * Serves as a getting for test fixture data as well as data from `otherParams` field.  The test fixture get takes precedence over the
+     * `otherParams` get.
+     * @param string $name
+     * @return mixed|null
+     */
     public function __get(string $name)
     {
         if (key_exists($name, $this->fixture)) {
             return $this->fixture[$name];
         }
+        if (key_exists($name, $this->otherParams)) {
+            return $this->otherParams[$name];
+        }
         return null;
     }
 
+    /**
+     * Serves as a setting for `otherParams` only. Test fixture setting is not performed in this method
+     * @param string $name
+     * @param $value
+     * @return void
+     */
     public function __set(string $name, $value): void
     {
         if (key_exists($name, $this->fixture)) return;
@@ -80,8 +106,11 @@ abstract class Assert implements FixtureAccess
     }
 
     /**
-     * Allow the test to take place and determine the result
+     * First, try to run the test assertion and determine the result. If an exception is thrown during the test,
+     * collect the `ExceptionResult` or `ErrorResult` objects instead of a pass or fail result. Finally, clear the exception
+     * expectation state.
      * @return void
+     * @throws ExpectationNotMet
      */
     protected function initTest(): void
     {
@@ -112,6 +141,12 @@ abstract class Assert implements FixtureAccess
             Expect::Nothing();
         }
     }
+
+    /**
+     * Reflect the constructor method of the object to determine the input fixture names, information gathered for reporting.
+     * @return void
+     * @throws ReflectionException
+     */
     protected function getReflection(): void
     {
         $reflection = new ReflectionFunction($this->__construct(...));
@@ -119,7 +154,13 @@ abstract class Assert implements FixtureAccess
         $this->metadata[Key::P_NAME] = $reflection->getParameters();
     }
 
-
+    /**
+     * Calls to `Assert` child classes may be accomplished via blind static calls to the `Assert` __callStatic method
+     * @param string $name
+     * @param array $arguments
+     * @return void
+     * @throws AssertionDoesntExist
+     */
     public static function __callStatic(string $name, array $arguments)
     {
         $sf = __NAMESPACE__ . "\\Assert\\SingleFixture\\" . $name;
@@ -136,6 +177,7 @@ abstract class Assert implements FixtureAccess
     }
 
     /**
+     * Return the names of the arguments passed to the constructor
      * @return array
      */
     function getFixtureNames(): array
@@ -144,6 +186,7 @@ abstract class Assert implements FixtureAccess
     }
 
     /**
+     * Indicates that a fixture by a given name is present
      * @param string $name
      * @return bool
      */
@@ -153,7 +196,7 @@ abstract class Assert implements FixtureAccess
     }
 
     /**
-     * @param string|int $index
+     * @param string $index
      * @return mixed
      */
     function getFixture(string $index): mixed
